@@ -1,0 +1,22 @@
+.mat-toolbar {
+    width: 100%;
+    background-color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between ;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .mat-icon {
+      cursor: pointer;
+      padding: 0 10px;
+    }
+    
+    .header-logo {
+      color: pink;
+    }
+    
+    .header-spacer {
+      flex: 1 1 auto;
+    }
+    

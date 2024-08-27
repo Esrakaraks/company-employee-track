@@ -1,0 +1,21 @@
+.example-form {
+    width: 100%;
+  }
+  .example-full-width {
+    padding-left: 20px;
+  }
+  .add-container {
+    margin: 20px;
+    display: flex;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .disabled-icon {
+    color: gray;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+  .add-action {
+    display: flex;
+    justify-content: center;
+  }
