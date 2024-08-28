@@ -14,7 +14,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CompanyEmployeeEditComponent } from './client/companies/components/company-employee-edit/company-employee-edit.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +27,8 @@ import { RouterModule } from '@angular/router';
     HeaderComponent,
     CompanyEmployeeAddComponent,
     CompanyEmployeeListComponent,
-    LoginComponent
+    LoginComponent,
+    CompanyEmployeeEditComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +40,11 @@ import { RouterModule } from '@angular/router';
     MatTooltipModule,
     MatTableModule,
     MatInputModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]

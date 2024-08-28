@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Edit Company and Employees</h2>
+<mat-dialog-content>
+  <form [formGroup]="editForm">
+    <mat-form-field>
+      <mat-label>Company Name</mat-label>
+      <input matInput formControlName="companyName">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Company Address</mat-label>
+      <input matInput formControlName="companyAddress">
+    </mat-form-field>
+    <div formArrayName="employees">
+      <div *ngFor="let employee of employees.controls; let i = index">
+        <div [formGroupName]="i">
+          <mat-form-field>
+            <mat-label>Employee Name</mat-label>
+            <input matInput formControlName="EmployeeName">
+          </mat-form-field>
+          <button mat-button (click)="removeEmployee(i)">Remove</button>
+        </div>
+      </div>
+      <button mat-button (click)="addEmployee()">Add Employee</button>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSave()">Save</button>
+</mat-dialog-actions>

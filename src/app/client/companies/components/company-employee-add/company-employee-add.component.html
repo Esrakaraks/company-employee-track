@@ -1,32 +1,22 @@
-<div class="add-container">
-    <form class="example-form">
-      <div *ngFor="let field of fields let i = index">
-        <mat-icon (click)="addMoreFields()">add_circle</mat-icon>
-        <mat-icon  [ngClass]="{'disabled-icon': i === 0}" 
-        [attr.disabled]="i === 0 ? true : null" (click)="removeMoreFields(i)">remove_circle</mat-icon>
-        <mat-form-field class="example-full-width">
-          <input
-            matInput
-            [attr.name]="'field' + field.id"
-            placeholder="Company"
-            [attr.id]="'field' + field.id">
-        </mat-form-field>
-        <mat-form-field class="example-full-width">
-            <input
-              matInput
-              [attr.name]="'field' + field.id"
-              placeholder="Employee"
-              [attr.id]="'field' + field.id">
-          </mat-form-field>
-          <mat-form-field class="example-full-width">
-            <input
-              matInput
-              [attr.name]="'field' + field.id"
-              placeholder="Position"
-              [attr.id]="'field' + field.id">
-          </mat-form-field>
-      </div>
-    </form>
+<form (ngSubmit)="saveCompany()" class="example-form">
+  <div class="company-container">
+    <div class="company-form">
+      <mat-form-field class="example-full-width">
+        <input [(ngModel)]="companyName" name="companyName" matInput placeholder="Company name" required>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input [(ngModel)]="companyAddress" name="companyAddress" matInput placeholder="Company address" required>
+      </mat-form-field>
+    </div>
   </div>
-  <button type="submit" class="add-action" mat-raised-button color="accent">Accent</button>
-  
+  <div *ngIf="fields.length > 0" class="employee-container">
+    <div class="employee-item" *ngFor="let employee of fields; let i = index">
+      <button *ngIf="i > 0" class="remove-employee" (click)="removeEmployee(i)" mat-button color="primary">Remove</button>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Employee name" [(ngModel)]="employee.name" [ngModelOptions]="{standalone: true}" [attr.name]="'employeeName' + i">
+      </mat-form-field>
+    </div>
+  </div>
+  <button type="button" class="add-employee" (click)="add($event)" mat-stroked-button color="primary">Add More Employee</button>
+  <button type="submit" class="form-save" mat-raised-button color="primary">Save</button>
+</form>

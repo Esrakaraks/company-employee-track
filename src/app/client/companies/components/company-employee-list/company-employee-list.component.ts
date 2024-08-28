@@ -1,32 +1,58 @@
 import { Component } from '@angular/core';
-import { CompanyModel } from '../../../../core/models/CompanyModel';
-import { Employee } from '../../../../core/models/EmployeeModel';
+import { MatDialog } from '@angular/material/dialog';
+import { IndexedDBService } from 'src/app/core/indexed-db/db.service';
+import { CompanyEmployeeEditComponent } from '../company-employee-edit/company-employee-edit.component';
+import { CompanyWithEmployeesModel } from 'src/app/core/models/CompanyWithEmployeesModel';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
 @Component({
   selector: 'app-company-employee-list',
   templateUrl: './company-employee-list.component.html',
   styleUrls: ['./company-employee-list.component.css']
 })
 export class CompanyEmployeeListComponent {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ['companyName', 'companyAddress', 'employees','Actions'];
+  dataSource: CompanyWithEmployeesModel[] = [];
+
+  constructor(private indexedDBService: IndexedDBService,
+    private dialog: MatDialog
+  ) {}
+
+  async ngOnInit() {
+    try {
+      this.dataSource = await this.indexedDBService.listCompanyWithEmployees();
+      
+    } catch (error) {
+      console.error('Error fetching companies with employees:', error);
+    }
+  }
+  
+  editCompany(data: CompanyWithEmployeesModel) {
+    console.log('data',data);
+    const dialogRef = this.dialog.open(CompanyEmployeeEditComponent, {
+      width: '400px',
+      data: {
+        companyId: data.company.companyId,
+        companyName: data.company.companyName,
+        companyAddress: data.company.companyAddress,
+        employees: data.employees
+      }
+    });
+    console.log('dialogRef',dialogRef);
+    
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Update company with new data
+        this.indexedDBService.updateCompany(data.company.companyId, result).then(() => {  
+          console.log('data.company.companyId',data.company.companyId);    
+          console.log('Company updated successfully');
+          
+          this.ngOnInit(); // Refresh the list
+        }).catch(err => {
+          console.error('Error updating company:', err);
+        });
+      }
+    });
+  }
 }
+

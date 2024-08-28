@@ -1,21 +1,32 @@
-.example-form {
-    width: 100%;
+
+
+  .example-form {
+    display: flex;
+    margin-top: 15px;
+    flex-direction: column;
+    align-items: center;
   }
   .example-full-width {
-    padding-left: 20px;
+    min-width: 350px;
   }
-  .add-container {
-    margin: 20px;
+  .company-form {
     display: flex;
-    max-height: 400px;
-    overflow-y: auto;
+    flex-direction: column;
   }
-  .disabled-icon {
-    color: gray;
-    pointer-events: none;
-    cursor: not-allowed;
-  }
-  .add-action {
+
+  .employee-item {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    margin-bottom: -20px;
+  }
+  .remove-employee {
+    align-self: flex-end;
+  }
+  .add-employee {
+    margin-top: 10px;
+    width: 350px;
+  }
+  .form-save {
+    margin: 10px 0 100px;
+    width: 350px;
   }
