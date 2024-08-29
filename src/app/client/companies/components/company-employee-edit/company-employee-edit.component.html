@@ -16,14 +16,14 @@
             <mat-label>Employee Name</mat-label>
             <input matInput formControlName="EmployeeName">
           </mat-form-field>
-          <button mat-button (click)="removeEmployee(i)">Remove</button>
         </div>
       </div>
-      <button mat-button (click)="addEmployee()">Add Employee</button>
+      <button mat-stroked-button color="primary" (click)="addEmployee()">Add More Employee</button>
     </div>
+    <mat-dialog-actions>
+      <button mat-stroked-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+    </mat-dialog-actions>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button (click)="onSave()">Save</button>
-</mat-dialog-actions>
+

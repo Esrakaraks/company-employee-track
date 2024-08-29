@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IndexedDBService } from 'src/app/core/indexed-db/db.service';
+import { IndexedDBService } from 'src/app/core/services/indexed-db/db.service';
 import { CompanyEmployeeEditComponent } from '../company-employee-edit/company-employee-edit.component';
 import { CompanyWithEmployeesModel } from 'src/app/core/models/CompanyWithEmployeesModel';
 
@@ -27,9 +27,8 @@ export class CompanyEmployeeListComponent {
   }
   
   editCompany(data: CompanyWithEmployeesModel) {
-    console.log('data',data);
     const dialogRef = this.dialog.open(CompanyEmployeeEditComponent, {
-      width: '400px',
+      width: '350px',
       data: {
         companyId: data.company.companyId,
         companyName: data.company.companyName,
@@ -37,22 +36,28 @@ export class CompanyEmployeeListComponent {
         employees: data.employees
       }
     });
-    console.log('dialogRef',dialogRef);
     
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Update company with new data
-        this.indexedDBService.updateCompany(data.company.companyId, result).then(() => {  
-          console.log('data.company.companyId',data.company.companyId);    
+        this.indexedDBService.updateCompany(data.company.companyId, result).then(() => {    
           console.log('Company updated successfully');
           
-          this.ngOnInit(); // Refresh the list
+          this.ngOnInit();
         }).catch(err => {
           console.error('Error updating company:', err);
         });
       }
     });
+  }
+  async deleteCompany(companyId: number) {
+    try {
+      await this.indexedDBService.deleteCompany(companyId);
+      console.log('Company deleted successfully');
+      this.ngOnInit();
+    } catch (error) {
+      console.error('Error deleting company:', error);
+    }
   }
 }
 

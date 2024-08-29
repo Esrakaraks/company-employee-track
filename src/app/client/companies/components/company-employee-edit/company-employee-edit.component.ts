@@ -17,7 +17,6 @@ export class CompanyEmployeeEditComponent {
   ) {
 
     this.editForm = this.fb.group({   
-      companyId: data.companyId,
       companyName: [data.companyName || ''],
       companyAddress: [data.companyAddress || ''],
       employees: this.fb.array(
@@ -40,10 +39,6 @@ export class CompanyEmployeeEditComponent {
       employeeID: [''],
       EmployeeName: ['']
     }));
-  }
-
-  removeEmployee(index: number): void {
-    this.employees.removeAt(index);
   }
 
   onCancel(): void {

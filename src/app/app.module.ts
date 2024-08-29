@@ -20,7 +20,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CompanyEmployeeEditComponent } from './client/companies/components/company-employee-edit/company-employee-edit.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,6 +44,7 @@ import { CompanyEmployeeEditComponent } from './client/companies/components/comp
     MatDialogModule,
     ReactiveFormsModule,
     MatFormFieldModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

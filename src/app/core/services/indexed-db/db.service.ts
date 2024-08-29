@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CompanyModel } from '../models/CompanyWithEmployeesModel';
-import { EmployeeModel } from '../models/CompanyWithEmployeesModel';
-import { CompanyWithEmployeesModel } from '../models/CompanyWithEmployeesModel';
+import { CompanyModel,EmployeeModel,CompanyWithEmployeesModel } from '../../models/CompanyWithEmployeesModel';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +13,23 @@ export class IndexedDBService {
 
   private openDatabase(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('companyDBTEST', 1);
-
+      const request = indexedDB.open('DBTEST', 2);
+  
       request.onupgradeneeded = function(event) {
         const db = (event.target as IDBOpenDBRequest).result;
-        db.createObjectStore('companies', { keyPath: 'companyId', autoIncrement: true });
-        db.createObjectStore('employees', { keyPath: 'employeeID', autoIncrement: true });
+  
+        const companyStore = db.createObjectStore('companies', { keyPath: 'companyId', autoIncrement: true });
+        companyStore.createIndex('companyName', 'companyName', { unique: false });
+  
+        const employeeStore = db.createObjectStore('employees', { keyPath: 'employeeID', autoIncrement: true });
+        employeeStore.createIndex('companyId', 'companyId', { unique: false });
+  
       };
-
+  
       request.onsuccess = function(event) {
         resolve((event.target as IDBOpenDBRequest).result);
       };
-
+  
       request.onerror = function(event) {
         reject(`Error opening database: ${(event.target as IDBOpenDBRequest).error}`);
       };
@@ -112,7 +115,8 @@ export class IndexedDBService {
     }
     
   }
-  async updateCompany(companyId: number, data: any): Promise<void> {  
+  
+  async updateCompany(companyId: number, data: any): Promise<void> {
     const db = await this.dbPromise;
     const transaction = db.transaction(['companies', 'employees'], 'readwrite');
     const companyStore = transaction.objectStore('companies');
@@ -128,17 +132,61 @@ export class IndexedDBService {
     companyRequest.onsuccess = () => {
       console.log('Company updated successfully');
   
-      // Log data to check what is being sent to the employee store
-      console.log('Updating employees:', data.employees);
       // Update employees
       data.employees.forEach((employee: EmployeeModel) => {
+        // Set the companyId for the employee
+        employee.companyId = companyId;
+  
         const employeeRequest = employeeStore.put(employee);
-        console.log('employeeRequest', employeeRequest);
-      
+  
+        employeeRequest.onsuccess = () => console.log('Employee updated:', employee);
+        employeeRequest.onerror = (event) => console.error('Error updating employee:', (event.target as IDBRequest).error);
       });
     };
   
     companyRequest.onerror = (event) => console.error('Error updating company:', (event.target as IDBRequest).error);
-
-  } 
+  
+    return new Promise((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = (event) => reject((event.target as IDBTransaction).error);
+    });
+  }
+  
+  
+  async deleteCompany(companyId: number): Promise<void> {
+    const db = await this.dbPromise;
+    const transaction = db.transaction(['companies', 'employees'], 'readwrite');
+    const companyStore = transaction.objectStore('companies');
+    const employeeStore = transaction.objectStore('employees');
+    
+    // Delete company
+    const companyRequest = companyStore.delete(companyId);
+    
+    companyRequest.onsuccess = () => {
+      console.log('Company deleted successfully');
+    
+      // Delete employees associated with the company
+      const index = employeeStore.index('companyIdIndex');
+      const employeesRequest = index.openCursor(IDBKeyRange.only(companyId));
+    
+      employeesRequest.onsuccess = (event: Event) => {
+        const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+        if (cursor) {
+          cursor.delete();
+          cursor.continue();
+        }
+      };
+    
+      employeesRequest.onerror = (event) => console.error('Error deleting employees:', (event.target as IDBRequest).error);
+    };
+    
+    companyRequest.onerror = (event) => console.error('Error deleting company:', (event.target as IDBRequest).error);
+    
+    return new Promise((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = (event) => reject((event.target as IDBTransaction).error);
+    });
+  }
+  
+  
 }

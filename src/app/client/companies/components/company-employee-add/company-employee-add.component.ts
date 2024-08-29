@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IndexedDBService } from 'src/app/core/indexed-db/db.service';
+import { Router } from '@angular/router';
+import { IndexedDBService } from 'src/app/core/services/indexed-db/db.service';
 
 @Component({
   selector: 'app-company-employee-add',
@@ -13,7 +14,7 @@ export class CompanyEmployeeAddComponent {
   fields: { name: string }[] = [{ name: '' }];
 
   
-  constructor(private indexedDBService: IndexedDBService) {}
+  constructor(private indexedDBService: IndexedDBService, private router: Router) {}
   add(event: Event) {
     event.preventDefault();
     this.fields.push({ name: '' });
@@ -25,7 +26,7 @@ export class CompanyEmployeeAddComponent {
   getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
-  saveCompany() {
+  async saveCompany() {
     const companyData = {
       companyId: this.getRandomInt(1000, 9999),
       companyName: this.companyName,
@@ -36,7 +37,18 @@ export class CompanyEmployeeAddComponent {
       }))
     };
 
-    this.indexedDBService.addCompanyWithEmployees(companyData);
+    try {
+      await this.indexedDBService.addCompanyWithEmployees(companyData);
+      console.log('Company and employees added successfully');
+      this.router.navigate(['/company-employee-list']);
+      
+      // Clear fields after successful save
+      this.companyName = '';
+      this.companyAddress = '';
+      this.fields = [{ name: '' }];
+    } catch (error) {
+      console.error('Error saving company and employees:', error);
+    }
   }
  
 }

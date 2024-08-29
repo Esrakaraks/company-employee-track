@@ -19,11 +19,11 @@
         <div *ngFor="let employee of element.employees">{{ employee.EmployeeName }}</div>   
     </td>
   </ng-container>
-  <ng-container class="action-table" matColumnDef="Actions">
+  <ng-container matColumnDef="Actions">
     <th mat-header-cell *matHeaderCellDef> Actions </th>
     <td mat-cell *matCellDef="let element">
       <button class="edit-action" (click)="editCompany(element)" mat-stroked-button color="primary">Edit</button>
-      <button class="delete-action" mat-raised-button color="primary">Delete</button>
+      <button class="delete-action" (click)="deleteCompany(element.company.companyId)" mat-raised-button color="primary">Delete</button>
     </td>
   </ng-container>
 
